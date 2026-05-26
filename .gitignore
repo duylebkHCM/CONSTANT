@@ -1,0 +1,113 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+.virtualenv/
+
+# PyTorch / ML
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+ckpt/
+checkpoints/
+runs/
+output/
+logs/
+tbrun/
+pretrained/
+
+# Data
+data/raw/
+data/preprocess/
+data/compositional_layout_resources/
+*.npz
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+ desktop.ini
+
+# Logs
+*.log
+*.out
+*.err
+wandb/
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# UV (package manager)
+# Uncomment the next line if you DON'T want to track uv.lock
+# uv.lock
+
+# Local config overrides (developer-specific paths)
+configs/local.yaml
+configs/secrets.yaml
+
+# Gradio
+gradio_cached_examples/
+flagged/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Assets
+assets/sample/

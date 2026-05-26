@@ -1,0 +1,63 @@
+# Git
+.git
+.gitignore
+
+# Docker
+docker
+*.dockerfile
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Data and outputs
+data/
+output/
+pretrained/
+ckpt/
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.npz
+*.h5
+*.hdf5
+*.pkl
+
+# Logs
+*.log
+logs/
+tbrun/
+runs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+.cache/
+
+# Documentation
+docs/
+*.md
+!README.md

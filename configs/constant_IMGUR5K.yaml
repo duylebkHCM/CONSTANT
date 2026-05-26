@@ -1,0 +1,145 @@
+DATASET_CLS: DatasetVariableStyleReference
+CONTEXT_DIM: 512
+TOKENIZER_TYPE: Char_Tokenizer
+NUM_CODEBOOK: 2048
+MAX_WIDTH: 320
+MIN_WIDTH: 64
+STYLE_MAX_WIDTH: 18
+
+
+constrastive:
+  params:
+    clip_params: null
+    loss_weight: 0.1
+  target: src.model.sce.StyleContrastiveEnhanceCLIP
+
+content_constrastive:
+  params:
+    gradient_flows_to_negative_nce: false
+    input_size: 8
+    layer_weight_multiplier: 1.0
+    loss_weight: 0.1
+    nc: 256
+    nce_fake_negatives: false
+    nce_t: 0.07
+    num_feats: 3
+    num_patches: 256
+  target: src.model.pce.PatchContrastiveNCE
+
+diffusion:
+  params:
+    backbone_params:
+      attention_resolutions:
+      - 1
+      - 1
+      channel_mult:
+      - 1
+      - 1
+      condition_fusion: cross_attn
+      context_dim: ${CONTEXT_DIM}
+      in_channels: 4
+      model_channels: 512
+      num_heads: 4
+      num_res_blocks: 1
+      out_channels: 4
+    clfree_params:
+      cond_drop_prob: 0.2
+      cond_scale: 6
+      rescaled_phi: 0.7
+    ddim_sampling: true
+    down_sample: 8
+    fp16: false
+    img_size: 64
+    input_channel: 4
+    latent: true
+    loss_weight: 1.0
+    noise_steps: 1000
+    sampling_steps: 50
+  target: src.model.diffusion.DiffusionEngine
+
+metric:
+  save_top_k: 1
+
+
+pipeline:
+  target: src.model.pipeline.HandwritingGenerationPipeline
+
+style_extractor:
+  params:
+    attn_pool_params:
+      embed_dim: 768
+      feat_size:
+      - 2
+      - ${STYLE_MAX_WIDTH}
+      in_features: 1536
+      num_heads: 4
+      out_features: ${CONTEXT_DIM}
+    codebook_params:
+      beta: 0.25
+      downsample: 1
+      latent_dim: 768
+      num_codebook_vectors: ${NUM_CODEBOOK}
+    loss_weight: 0.1
+    pretrained_path:
+      url: https://github.com/mseitzer/pytorch-fid/releases/download/fid_weights/pt_inception-2015-12-05-6726825d.pth
+      cache_dir: pretrained/inception_v3
+  target: src.model.SAQ.VectorQuantizedStylePredictorAttentionPoolConcat
+
+dataset:
+  params:
+    full_dict_path: data/preprocess/IMGUR5K/transcriptions/train.json
+    image_path: data/preprocess/IMGUR5K/images
+    max_length: null
+    max_width: ${MAX_WIDTH}
+    min_width: ${MIN_WIDTH}
+    random_style_image: true
+    tokenizer_type: ${TOKENIZER_TYPE}
+    transform_level: none
+    writer_dict_path: data/preprocess/IMGUR5K/writers_dict/train.json
+  target: src.data.dataset.${DATASET_CLS}
+
+testdataset:
+  params:
+    full_dict_path: data/preprocess/IMGUR5K/transcriptions/test.json
+    image_path: data/preprocess/IMGUR5K/images
+    max_length: null
+    max_width: ${MAX_WIDTH}
+    min_width: ${MIN_WIDTH} #equal to image height
+    random_style_image: false
+    tokenizer_type: ${TOKENIZER_TYPE}
+    transform_level: none
+    writer_dict_path: data/preprocess/IMGUR5K/writers_dict/test.json
+  target: src.data.dataset.${DATASET_CLS}
+
+text_encoder:
+  params:
+    context_dim: ${CONTEXT_DIM}
+    drop_rate: 0.1
+    enc_depth: 3
+    max_seq_len: 1000
+  target: src.model.content_encoder.CharacterEncoder
+
+
+training:
+  amp: true
+  base_lr: 0.0001
+  batch_size: 64
+  iteration: 800000
+  log_image_buffer: 20
+  skip_log_images: false
+  log_interval: 500
+  loss_balancing: true
+  num_workers: auto
+  output_dir: output
+  sampler:
+    target: src.data.sampler.ByWriterIDSampler
+  save_interval: 10000
+  update_ema: false
+  val_batch_size: 64
+  valid: false
+
+vae:
+  pretrained_path:
+    huggingface: stable-diffusion-v1-5/stable-diffusion-v1-5
+    subfolder: vae
+    cache_dir: pretrained/vae
